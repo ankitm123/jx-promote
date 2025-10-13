@@ -730,6 +730,13 @@ func (o *Options) ResolveChartRepositoryURL() (string, error) {
 			return chartRepo, nil
 		}
 
+		if o.DevEnvContext.Requirements.Cluster.ChartKind == jxcore.ChartRepositoryTypeOCI {
+			// Append oci scheme to the URL if not already present
+			if !strings.HasPrefix(chartRepo, "oci://") {
+				chartRepo = "oci://" + chartRepo
+			}
+		}
+
 		// A repo URL that is local to this cluster would not work when deploying to a remote cluster.
 		if !IsLocalChartRepository(chartRepo) {
 			return chartRepo, nil
