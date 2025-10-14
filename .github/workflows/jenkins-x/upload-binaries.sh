@@ -17,4 +17,4 @@ export REV=$(git rev-parse HEAD)
 export GOVERSION="1.22.3"
 export ROOTPACKAGE="github.com/$REPOSITORY"
 
-goreleaser release
+goreleaser release --clean --parallelism=1 --timeout=30m
