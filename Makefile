@@ -152,25 +152,12 @@ get-fmt-deps: ## Install test dependencies
 	$(GO_NOMOD) install golang.org/x/tools/cmd/goimports
 
 .PHONY: fmt
-fmt: importfmt ## Format the code
-	$(eval FORMATTED = $(shell $(GO) fmt ./...))
-	@if [ "$(FORMATTED)" == "" ]; \
-      	then \
-      	    echo "All Go files properly formatted"; \
-      	else \
-      		echo "Fixed formatting for: $(FORMATTED)"; \
-      	fi
-
-.PHONY: importfmt
-importfmt: get-fmt-deps
-	@echo "Formatting the imports..."
-	goimports -w $(GO_DEPENDENCIES)
+fmt: ## Format the code
+	golangci-lint fmt
 
 .PHONY: lint
 lint: ## Lint the code
-	./hack/gofmt.sh
-	./hack/linter.sh
-	./hack/generate.sh
+	GO111MODULE=on golangci-lint run --verbose --build-tags build
 
 .PHONY: all
 all: fmt build lint test
